@@ -3,7 +3,7 @@
   "displayName": "TabInOut",
   "description": "Tab out of quotes, brackets, etc",
   "version": "0.0.0",
-  "publisher": "ddalapnge",
+  "publisher": "ddalpange",
   "engines": {
     "vscode": "^1.22.0"
   },
