@@ -1,20 +1,20 @@
 {
-  "name": "TabOut",
-  "displayName": "TabOut",
+  "name": "TabInOut",
+  "displayName": "TabInOut",
   "description": "Tab out of quotes, brackets, etc",
   "version": "0.2.2",
-  "publisher": "albert",
+  "publisher": "ddalapnge",
   "engines": {
     "vscode": "^1.22.0"
   },
   "bugs": {
-    "url": "https://github.com/albertromkes/tabout/issues",
-    "email": "albert@rainology.nl"
+    "url": "https://github.com/ddalpange/TabInOut/issues",
+    "email": "ddalpange@gmail.com"
   },
-  "homepage": "https://github.com/albertromkes/tabout",
+  "homepage": "https://github.com/ddalpange/TabInOut",
   "repository": {
     "type": "git",
-    "url": "https://github.com/albertromkes/tabout.git"
+    "url": "https://github.com/ddalpange/TabInOut.git"
   },
   "icon": "images/Tab-Key.jpg",
   "categories": [
@@ -27,14 +27,14 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "TabOut configuration",
+      "title": "TabInOut configuration",
       "properties": {
-        "tabout.disableByDefault": {
+        "tabInOut.disableByDefault": {
           "type": "boolean",
           "default": false,
-          "description": "Disables the TabOut extension by default"
+          "description": "Disables the TabInOut extension by default"
         },
-        "tabout.charactersToTabOutFrom": {
+        "tabInOut.charactersToTabInOutFrom": {
           "type": "array",
           "description": "Sets of opening and closing character pairs to be able to tab out from.",
           "default": [
@@ -109,15 +109,21 @@
     },
     "commands": [
       {
-        "command": "toggle-tabout",
-        "title": "Toggle TabOut"
+        "command": "toggle-tabInOut",
+        "title": "Toggle TabInOut"
       }
     ],
     "keybindings": [
       {
-        "command": "tabout",
+        "command": "tabInOut-out",
         "key": "tab",
         "mac": "tab",
+        "when": "editorTextFocus && !suggestWidgetVisible && !inlineSuggestionVisible && !inSnippetMode && !editorHasMultipleSelections"
+      },
+      {
+        "command": "tabInOut-in",
+        "key": "shift+tab",
+        "mac": "shift+tab",
         "when": "editorTextFocus && !suggestWidgetVisible && !inlineSuggestionVisible && !inSnippetMode && !editorHasMultipleSelections"
       }
     ]

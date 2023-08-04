@@ -22,31 +22,33 @@ import {
   oneNumberIsNegative,
   getPreviousChar,
   getNextChar,
+
   determineNextSpecialCharPosition,
+  determinePrevSpecialCharPosition,
 } from "./utils";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
   let isDisabledByDefault = vscode.workspace
-    .getConfiguration("tabout")
+    .getConfiguration("tabInOut")
     .get("disableByDefault");
   context.workspaceState.update(
-    "tabout-active",
+    "tabInOut-active",
     isDisabledByDefault ? false : true,
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("toggle-tabout", () => {
-      let currentState = context.workspaceState.get("tabout-active");
-      context.workspaceState.update("tabout-active", !currentState);
+    vscode.commands.registerCommand("toggle-tabInOut", () => {
+      let currentState = context.workspaceState.get("tabInOut-active");
+      context.workspaceState.update("tabInOut-active", !currentState);
       window.showInformationMessage(
-        "TabOut is " + (!currentState ? "" : " NOT ") + "active",
+        "TabInOut is " + (!currentState ? "" : " NOT ") + "active",
       );
     }),
   );
 
-  let tabout = vscode.commands.registerCommand("tabout", () => {
+  let outOf = vscode.commands.registerCommand("tabInOut-out", () => {
     // The code you place here will be executed every time your command is executed
     let editor = window.activeTextEditor;
 
@@ -54,7 +56,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     if (!editor) return;
 
-    if (!context.workspaceState.get("tabout-active")) {
+    if (!context.workspaceState.get("tabInOut-active")) {
       commands.executeCommand("tab");
       return;
     }
@@ -127,7 +129,89 @@ export function activate(context: vscode.ExtensionContext) {
     return selectNextCharacter(currentLineText, currentPositionInLine);
   });
 
-  context.subscriptions.push(tabout);
+  let inOf = vscode.commands.registerCommand("tabInOut-in", () => {
+    // The code you place here will be executed every time your command is executed
+    let editor = window.activeTextEditor;
+
+    //vscode.commands.executeCommand("acceptSelectedSuggestion");
+
+    if (!editor) return;
+
+    if (!context.workspaceState.get("tabInOut-active")) {
+      commands.executeCommand("tab");
+      return;
+    }
+
+    let currentLineText = editor.document.lineAt(
+      editor.selection.active.line,
+    ).text;
+    let currentPositionInLine = editor.selection.active.character;
+
+    if (currentPositionInLine == 0) {
+      commands.executeCommand("shift+tab");
+      return;
+    }
+
+    if (editor.selection.active.character > 0) {
+      var rangeBeforeCurrentPosition = new Range(
+        new Position(editor.selection.active.line, 0),
+        new Position(editor.selection.active.line, currentPositionInLine),
+      );
+      var textBeforeCurrentPosition = editor.document.getText(
+        rangeBeforeCurrentPosition,
+      );
+      if (textBeforeCurrentPosition.trim() == "") {
+        commands.executeCommand("shift+tab");
+        return;
+      }
+    }
+
+    //Previous character special?
+    let previousCharacter = getPreviousChar(
+      currentPositionInLine,
+      currentLineText,
+    );
+    let characterInfo = characterSetsToTabOutFrom().find(
+      (o) => o.open == previousCharacter || o.close == previousCharacter,
+    );
+
+    if (characterInfo !== undefined) {
+      let prevChar = getPreviousChar(currentPositionInLine, currentLineText);
+      let indxPrev = characterSetsToTabOutFrom().find(
+        (o) => o.open == prevChar || o.close == prevChar,
+      );
+
+      if (indxPrev !== undefined) {
+        return selectNextCharacter(currentLineText, currentPositionInLine);
+      }
+    }
+
+    if (characterInfo !== undefined) {
+      //no tab, put selection just before the next special character
+      let positionPrevSpecialCharacter = determinePrevSpecialCharPosition(
+        characterInfo,
+        currentLineText,
+        currentPositionInLine,
+      );
+      if (positionPrevSpecialCharacter > -1) {
+        //Move cursor
+        let prevCursorPosition = new vscode.Position(
+          editor.selection.active.line,
+          positionPrevSpecialCharacter,
+        );
+        return (editor.selection = new vscode.Selection(
+          prevCursorPosition,
+          prevCursorPosition,
+        ));
+      }
+    }
+
+    //Next character special?
+    return selectNextCharacter(currentLineText, currentPositionInLine);
+  });
+
+  context.subscriptions.push(outOf);
+  context.subscriptions.push(inOf);
 }
 
 // this method is called when your extension is deactivated

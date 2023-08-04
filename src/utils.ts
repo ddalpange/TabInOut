@@ -22,6 +22,39 @@ export function getNextChar(currentPosition: number, text: string): string {
   return text.substring(currentPosition + 1, currentPosition);
 }
 
+
+export function determinePrevSpecialCharPosition(
+  charInfo: CharacterSet,
+  text: string,
+  position: number,
+): number {
+  let positionPrevOpenChar = text.indexOf(charInfo.close, position - 1);
+
+  if (positionPrevOpenChar == -1) {
+    positionPrevOpenChar = text.indexOf(charInfo.open, position - 1);
+  }
+
+  if (positionPrevOpenChar == -1) {
+    //find first other special character
+    var strToSearchIn = text.substr(position);
+    var counter = position;
+    for (var char of strToSearchIn) {
+      counter++;
+      let info = characterSetsToTabOutFrom().find(
+        (c) => c.open == char || c.close == char,
+      );
+
+      if (info !== undefined) {
+        positionPrevOpenChar = counter;
+        break;
+      }
+    }
+  }
+
+  return positionPrevOpenChar;
+}
+
+
 export function determineNextSpecialCharPosition(
   charInfo: CharacterSet,
   text: string,
@@ -72,4 +105,25 @@ export function selectNextCharacter(text: string, position: number) {
 
   //Default
   commands.executeCommand("tab");
+}
+
+export function selectPrevCharacter(text: string, position: number) {
+  let prevCharacter = getPreviousChar(position, text);
+  let indxPrev = characterSetsToTabOutFrom().find(
+    (o) => o.open == prevCharacter || o.close == prevCharacter,
+  );
+  if (indxPrev !== undefined) {
+    //no tab, put selection just AFTER the next special character
+    let prevCursorPosition = new Position(
+      window.activeTextEditor.selection.active.line,
+      position - 1,
+    );
+    return (window.activeTextEditor.selection = new Selection(
+      prevCursorPosition,
+      prevCursorPosition,
+    ));
+  }
+
+  //Default
+  commands.executeCommand("shift+tab");
 }
