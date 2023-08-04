@@ -1,18 +1,6 @@
 import { CharacterSet } from "./CharacterSet";
-import { characterSetsToTabOutFrom } from "./charactersToTabOutFrom";
+import { characterSetsToTabInOutFrom } from "./charactersToTabInOutFrom";
 import { window, Position, Selection, commands } from "vscode";
-
-export function returnHighest(num1: number, num2: number): number {
-  return num1 > num2 ? num1 : num2;
-}
-
-export function returnLowest(num1: number, num2: number): number {
-  return num1 < num2 ? num1 : num2;
-}
-
-export function oneNumberIsNegative(num1: number, num2: number): boolean {
-  return num1 <= -1 || num2 <= -1;
-}
 
 export function getPreviousChar(currentPosition: number, text: string): string {
   return text.substring(currentPosition - 1, currentPosition);
@@ -22,36 +10,21 @@ export function getNextChar(currentPosition: number, text: string): string {
   return text.substring(currentPosition + 1, currentPosition);
 }
 
-
 export function determinePrevSpecialCharPosition(
-  charInfo: CharacterSet,
+  nextCharInfo: CharacterSet,
   text: string,
   position: number,
 ): number {
-  let positionPrevOpenChar = text.indexOf(charInfo.close, position - 1);
-
-  if (positionPrevOpenChar == -1) {
-    positionPrevOpenChar = text.indexOf(charInfo.open, position - 1);
-  }
-
-  if (positionPrevOpenChar == -1) {
-    //find first other special character
-    var strToSearchIn = text.substr(position);
-    var counter = position;
-    for (var char of strToSearchIn) {
-      counter++;
-      let info = characterSetsToTabOutFrom().find(
-        (c) => c.open == char || c.close == char,
-      );
-
-      if (info !== undefined) {
-        positionPrevOpenChar = counter;
-        break;
-      }
+  var strToSearchIn = text.substr(0, position - 1);
+  for (let i = strToSearchIn.length; i >= 0; i--) {
+    const char = strToSearchIn[i];
+    let info = char === nextCharInfo.open || char === nextCharInfo.close;
+    if (info) {
+      return i;
     }
   }
 
-  return positionPrevOpenChar;
+  return -1;
 }
 
 
@@ -72,7 +45,7 @@ export function determineNextSpecialCharPosition(
     var counter = position;
     for (var char of strToSearchIn) {
       counter++;
-      let info = characterSetsToTabOutFrom().find(
+      let info = characterSetsToTabInOutFrom().find(
         (c) => c.open == char || c.close == char,
       );
 
@@ -88,7 +61,7 @@ export function determineNextSpecialCharPosition(
 
 export function selectNextCharacter(text: string, position: number) {
   let nextCharacter = getNextChar(position, text);
-  let indxNext = characterSetsToTabOutFrom().find(
+  let indxNext = characterSetsToTabInOutFrom().find(
     (o) => o.open == nextCharacter || o.close == nextCharacter,
   );
   if (indxNext !== undefined) {
@@ -109,7 +82,7 @@ export function selectNextCharacter(text: string, position: number) {
 
 export function selectPrevCharacter(text: string, position: number) {
   let prevCharacter = getPreviousChar(position, text);
-  let indxPrev = characterSetsToTabOutFrom().find(
+  let indxPrev = characterSetsToTabInOutFrom().find(
     (o) => o.open == prevCharacter || o.close == prevCharacter,
   );
   if (indxPrev !== undefined) {
@@ -125,5 +98,5 @@ export function selectPrevCharacter(text: string, position: number) {
   }
 
   //Default
-  commands.executeCommand("shift+tab");
+  commands.executeCommand("outdent");
 }

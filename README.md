@@ -1,13 +1,19 @@
-# README
+# TabInOut
+
+this repository was hard forked from https://github.com/albertromkes/tabout.
+
+You can jump special symbols (any brackets, quotes, etc) using `tab`.
+also you can get back inside using `shift-tab`
+
 
 Tab out of quotes, brackets, etc for Visual Studio Code.
 
-The list of characters to TabOut from is configured in Settings (https://code.visualstudio.com/docs/getstarted/settings).
-You can remove and/or add characters to customize TabOut to your liking.
+The list of characters to TabInOut from is configured in Settings (https://code.visualstudio.com/docs/getstarted/settings).
+You can remove and/or add characters to customize TabInOut to your liking.
 
 <details>
     <summary>
-        Default list of characters to TabOut from (click to expand)
+        Default list of characters to TabInOut from (click to expand)
     </summary>
     <pre>
         {
@@ -64,11 +70,9 @@ You can remove and/or add characters to customize TabOut to your liking.
 
 This extension is enabled by default. You can override this behaviour in your settings:
 
-    "tabout.disableByDefault": true
+    "tabInOut.disableByDefault": true
 	
-You can toggle the extension with the 'Toggle TabOut' command. 
-
-<img src="https://raw.githubusercontent.com/albertromkes/tabout/master/images/tabout-command.gif">
+You can toggle the extension with the 'Toggle TabInOut' command. 
 
 
 

@@ -2,7 +2,7 @@
   "name": "TabInOut",
   "displayName": "TabInOut",
   "description": "Tab out of quotes, brackets, etc",
-  "version": "0.2.2",
+  "version": "0.0.0",
   "publisher": "ddalapnge",
   "engines": {
     "vscode": "^1.22.0"
@@ -131,13 +131,16 @@
   "scripts": {
     "vscode:prepublish": "tsc -p ./",
     "compile": "tsc -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install"
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "package": "pnpm vsce package --no-dependencies",
+    "publish": "pnpm vsce publish --no-dependencies"
   },
   "devDependencies": {
-    "typescript": "4.3.5",
-    "vscode": "1.1.37",
+    "@types/mocha": "^2.2.32",
     "@types/node": "^6.0.40",
-    "@types/mocha": "^2.2.32"
+    "@vscode/vsce": "^2.20.0",
+    "typescript": "4.3.5",
+    "vscode": "1.1.37"
   },
   "dependencies": {
     "minimist": "^1.2.6"
