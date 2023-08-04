@@ -23,8 +23,8 @@ You can remove and/or add characters to customize TabInOut to your liking.
             "close": "]"
         },
         {
-            "open": "{",
-            "close": "}"
+            "open": "{",        
+            "close": "}"    
         },
         {
             "open": "(",
