@@ -1,5 +1,7 @@
 # TabInOut
 
+![example](./images/example.gif)
+
 this repository was hard forked from https://github.com/albertromkes/tabout.
 
 You can jump special symbols (any brackets, quotes, etc) using `tab`.
